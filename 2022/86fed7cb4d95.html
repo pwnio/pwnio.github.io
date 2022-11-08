@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="PwnIO">
+
+
+
+
+
+<title>用脑洞方法解决力扣1106解析布尔表达式 | Pwnio.com</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7E0T45VP3T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7E0T45VP3T');
+</script>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Pwnio&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Pwnio&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">用脑洞方法解决力扣1106解析布尔表达式</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">PwnIO</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2022-11-08&nbsp;&nbsp;21:55:10</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Tech/">Tech</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="脑洞解法"><a href="#脑洞解法" class="headerlink" title="脑洞解法"></a>脑洞解法</h1><p>原题如下：</p>
+<blockquote>
+<p>给你一个以字符串形式表述的 布尔表达式（boolean）expression，返回该式的运算结果。</p>
+<p>有效的表达式需遵循以下约定：</p>
+<p>“t”，运算结果为 True<br>“f”，运算结果为 False<br>“!(expr)”，运算过程为对内部表达式expr进行逻辑非的运算（NOT）<br>“&amp;(expr1,expr2,…)”，运算过程为对2个或以上内部表达式expr1, expr2, …进行逻辑与的运算（AND）<br>“|(expr1,expr2,…)”，运算过程为对2个或以上内部表达式expr1, expr2, …进行逻辑或的运算（OR）</p>
+<p>示例：<br>输入：expression = “|(&amp;(t,f,t),!(t))”<br>输出：false</p>
+<p>来源：力扣（LeetCode）<br>链接：<a target="_blank" rel="noopener" href="https://leetcode.cn/problems/parsing-a-boolean-expression">https://leetcode.cn/problems/parsing-a-boolean-expression</a></p>
+</blockquote>
+<p>正经做法应该是用栈去解析字符串。但实际上题中对于布尔表达式的定义与开发语言中的表达式类似，同时很多开发语言是带有eval函数的（比如Python），可以把字符串当作代码语句来执行。因此可以取巧来做：</p>
+<ul>
+<li>我们把题中定义的布尔表达式转换为Python的正经表达式s</li>
+<li>使用eval(s)来求得表达式的布尔结果</li>
+</ul>
+<p>理论存在，实践开始：</p>
+<ul>
+<li>题中&amp;(t, f)和|(f, t)和Python函数调用格式类似，编两个函数，并把&amp;和|替换成函数名</li>
+<li>t替换成True，f替换成False</li>
+<li>!替换成not</li>
+<li>eval(替换好的字符串)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Solution</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">parseBoolExpr</span>(<span class="params">self, expression: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">func_and</span>(<span class="params">*args</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">            res = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> args:</span><br><span class="line">                res = res <span class="keyword">and</span> i</span><br><span class="line">            <span class="keyword">return</span> res</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">func_or</span>(<span class="params">*args</span>) -&gt; <span class="built_in">bool</span>:</span><br><span class="line">            res = <span class="literal">False</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> args:</span><br><span class="line">                res = res <span class="keyword">or</span> i</span><br><span class="line">            <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">        s = expression.replace(<span class="string">&#x27;t&#x27;</span>, <span class="string">&#x27;True&#x27;</span>).replace(<span class="string">&#x27;f&#x27;</span>, <span class="string">&#x27;False&#x27;</span>).replace(<span class="string">&#x27;!&#x27;</span>, <span class="string">&#x27;not&#x27;</span>) \</span><br><span class="line">        .replace(<span class="string">&#x27;&amp;&#x27;</span>, <span class="string">&#x27;func_and&#x27;</span>).replace(<span class="string">&#x27;|&#x27;</span>, <span class="string">&#x27;func_or&#x27;</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">eval</span>(s)</span><br></pre></td></tr></table></figure>
+
+<h1 id="Py里的一些注意点"><a href="#Py里的一些注意点" class="headerlink" title="Py里的一些注意点"></a>Py里的一些注意点</h1><p>另外mark一下，Python里，逻辑运算符的结果并不是布尔类型。</p>
+<p>对于and来说：</p>
+<ul>
+<li>当and两边条件为“真”时，返回的是and右边的值</li>
+<li>当and两边条件为“一真一假”时，返回的是条件为“假”的值</li>
+<li>当and两边条件都为“假”时，返回的是and左边的值</li>
+</ul>
+<p>对于or来说：</p>
+<ul>
+<li>当or两边条件都为“真”时，返回的是or左边的值</li>
+<li>当or两边条件为“一真一假”时，返回的是条件为“真”的值</li>
+<li>当or两边条件都为“假”时，返回的是or右边的值</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>PwnIO</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://pwnio.com/2022/86fed7cb4d95.html">http://pwnio.com/2022/86fed7cb4d95.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2022 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Tech/"># Tech</a>
+                    
+                        <a href="/tags/ACM/"># ACM</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2022/02424817df98.html">第五届“强网”拟态防御（线上赛）Writeup</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© PwnIO | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
