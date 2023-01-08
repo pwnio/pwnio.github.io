@@ -322,7 +322,7 @@
 </blockquote>
 <p>附件是个安卓APK。<br>解包反编译，代码审计，有部分代码反编译失败。<br>在\res\drawable下面还有可疑的数字和字母图片。<br>在com.example.ct_sanke.SnakeView类下面，有一串很长的字符串，疑似密文，大概这样：<br><img src="/2023/db1b70afee9d/snake_java.jpg" alt="Snake反编译"></p>
 <p>图里那个a.a()很可能是解密代码。<br>定位到SnakeView.smali，可以很直观的找到那串密文，再下面是循环。<br>插两行调用android.util.Log.e()的代码：<br><img src="/2023/db1b70afee9d/snake_java_modify.jpg" alt="Snake修改"></p>
-<p>重新打包，运行。<br>日志可以输出解密后的东西：<br><img src="/2023/db1b70afee9d/snake_output.jpg" alt="Snake输出日志"></p>
+<p>注意这边加了本地变量，所以函数最开始的.locals要对应增加。<br>重新打包，运行。<br>日志可以输出解密后的东西：<br><img src="/2023/db1b70afee9d/snake_output.jpg" alt="Snake输出日志"></p>
 <p>对应到图片上，得到：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EK33PG01NGD0N0TG1V3UPP</span><br></pre></td></tr></table></figure>
 <p>尝试了几下，可得flag：</p>
