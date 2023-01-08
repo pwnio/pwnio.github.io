@@ -305,6 +305,20 @@
 <p>pkexec提权漏洞(CVE-2021-4034)，找个脚本，一把梭。<br>供参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41252520/article/details/123030682">https://blog.csdn.net/qq_41252520/article/details/123030682</a></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rwctf&#123;CVE-2021-4034-PwnKit-is-Awes0me-But-Do-you-know-Handling-argc-0-in-the-kernel&#125;</span><br></pre></td></tr></table></figure>
 
+<h1 id="SNAKE"><a href="#SNAKE" class="headerlink" title="SNAKE"></a>SNAKE</h1><blockquote>
+<p>Score: 154<br>Reverse, Android,difficulty:Baby</p>
+</blockquote>
+<blockquote>
+<p>Keep eating</p>
+</blockquote>
+<p>附件是个安卓APK。<br>解包反编译，代码审计，有部分代码反编译失败。<br>在\res\drawable下面还有可疑的数字和字母图片。<br>在com.example.ct_sanke.SnakeView类下面，有一串很长的字符串，疑似密文，大概这样：<br><img src="/2023/db1b70afee9d/snake_java.jpg" alt="Snake反编译"></p>
+<p>下面那个循环很可能是解密代码。<br>定位到SnakeView.smali，可以很直观的找到那串密文，再下面是循环。<br>插两行调用android.util.Log.e()的代码：<br><img src="/2023/db1b70afee9d/snake_java_modify.jpg" alt="Snake修改"></p>
+<p>重新打包，运行。<br>日志可以输出解密后的东西：<br><img src="/2023/db1b70afee9d/snake_output.jpg" alt="Snake输出日志"></p>
+<p>对应到图片上，得到：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EK33PG01NGD0N0TG1V3UPP</span><br></pre></td></tr></table></figure>
+<p>尝试了几下，可得flag：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rwctf&#123;K33PG01NGD0N0TG1V3UP&#125;</span><br></pre></td></tr></table></figure>
+<p>即Keep going do not give up的英文变体。</p>
 <h1 id="Be-a-Wiki-Hacker"><a href="#Be-a-Wiki-Hacker" class="headerlink" title="Be-a-Wiki-Hacker"></a>Be-a-Wiki-Hacker</h1><blockquote>
 <p>Score: 61<br>Web, difficulty:Normal</p>
 </blockquote>
